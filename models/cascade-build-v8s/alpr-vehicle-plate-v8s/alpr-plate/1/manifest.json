@@ -1,0 +1,234 @@
+{
+  "quantized_model_file": "quantized_model.pt",
+  "input_shapes": [
+    [
+      1,
+      226,
+      240,
+      4
+    ]
+  ],
+  "input_dtypes": [
+    "int8"
+  ],
+  "output_shapes": [
+    [
+      1,
+      28,
+      28,
+      64
+    ],
+    [
+      1,
+      14,
+      14,
+      64
+    ],
+    [
+      1,
+      7,
+      7,
+      64
+    ],
+    [
+      1,
+      28,
+      28,
+      64
+    ],
+    [
+      1,
+      14,
+      14,
+      64
+    ],
+    [
+      1,
+      7,
+      7,
+      64
+    ]
+  ],
+  "output_dtypes": [
+    "int8",
+    "int8",
+    "int8",
+    "int8",
+    "int8",
+    "int8"
+  ],
+  "input_shapes_original": [
+    [
+      1,
+      3,
+      224,
+      224
+    ]
+  ],
+  "output_shapes_original": [
+    [
+      1,
+      4,
+      28,
+      28
+    ],
+    [
+      1,
+      4,
+      14,
+      14
+    ],
+    [
+      1,
+      4,
+      7,
+      7
+    ],
+    [
+      1,
+      1,
+      28,
+      28
+    ],
+    [
+      1,
+      1,
+      14,
+      14
+    ],
+    [
+      1,
+      1,
+      7,
+      7
+    ]
+  ],
+  "quantize_params": [
+    [
+      0.003921568859368563,
+      -128
+    ]
+  ],
+  "dequantize_params": [
+    [
+      0.029560120776295662,
+      -123
+    ],
+    [
+      0.008428388275206089,
+      -186
+    ],
+    [
+      0.005917323753237724,
+      -426
+    ],
+    [
+      0.4677809774875641,
+      121
+    ],
+    [
+      0.04636017233133316,
+      547
+    ],
+    [
+      0.0917755588889122,
+      275
+    ]
+  ],
+  "input_names": [
+    "x"
+  ],
+  "model_lib_file": "model.json",
+  "model_params_file": "params.bin",
+  "n_padded_ch_inputs": [
+    [
+      0,
+      0,
+      1,
+      1,
+      1,
+      15,
+      0,
+      1
+    ]
+  ],
+  "n_padded_ch_outputs": [
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      60
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      60
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      60
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      63
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      63
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      63
+    ]
+  ],
+  "input_tensor_layout": "NHWC",
+  "preprocess_graph": null,
+  "postprocess_graph": "postprocess_graph.onnx",
+  "model_metadata": {
+    "compiler_config_source": {
+      "toml_file": "yolo26.toml",
+      "toml_source": "compiler_wheel",
+      "toml_source_path": "/home/admin1/voyager-sdk/venv/lib/python3.12/site-packages/axelera/compiler/config/models/yolo26.toml",
+      "toml_copied_to_manifest": true,
+      "toml_fields": [
+        "quantization_scheme",
+        "ignore_weight_buffers"
+      ],
+      "yaml_overrides": []
+    }
+  },
+  "manifest_version": "1.1"
+}

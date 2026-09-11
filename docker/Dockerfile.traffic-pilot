@@ -1,0 +1,23 @@
+ARG INTEL_TRAFFIC_PILOT_RUNTIME_BASE=localhost/apexfabric-intel-traffic-runtime-base:intel-285h-2026.08.24-v1
+FROM ${INTEL_TRAFFIC_PILOT_RUNTIME_BASE}
+
+ENV PYTHONUNBUFFERED=1     PYTHONPATH=/opt/traffic-pilot     TRAFFIC_PILOT_ROOT=/opt/traffic-pilot     APEXFABRIC_CONTRACT_VERSION=v1     APEXFABRIC_SECRETS_ROOT=/run/secrets/apexfabric     APEXFABRIC_STATE_ROOT=/state     SNAPSHOT_ROOT=/state/snapshots     APEX_API_HOST=0.0.0.0     APEX_API_PORT=8080     DESIRED_STATE_RELOAD_INTERVAL=3     HOME=/tmp/apexfabric     XDG_CACHE_HOME=/tmp/apexfabric/cache
+
+WORKDIR /opt/traffic-pilot
+
+COPY services /opt/traffic-pilot/services
+COPY traffic_pilot_runtime /opt/traffic-pilot/traffic_pilot_runtime
+COPY config /opt/traffic-pilot/config
+COPY models/openvino /opt/traffic-pilot/models/openvino
+COPY delivery/apexfabric-v1/intel-285h/traffic-pilot /opt/traffic-pilot/delivery/apexfabric-v1/intel-285h/traffic-pilot
+
+RUN python -m py_compile traffic_pilot_runtime/*.py services/worker/stream_fleet_openvino.py     && test -f /opt/traffic-pilot/models/openvino/vehicle.xml     && test -f /opt/traffic-pilot/models/openvino/license_plate.xml     && test -f /opt/traffic-pilot/models/openvino/ocr.xml     && test -f /opt/traffic-pilot/models/openvino/smoke_fire.xml     && test "$(id -u apexruntime)" = "10001"
+
+ARG IMAGE_VERSION=2026.09.11-v1
+ARG INTEL_TRAFFIC_PILOT_RUNTIME_BASE_DIGEST=unresolved
+
+LABEL org.opencontainers.image.title="ApexFabric Traffic Pilot Runtime"       org.opencontainers.image.description="API-only Intel 285H traffic-pilot runtime"       org.opencontainers.image.version="${IMAGE_VERSION}"       io.apexfabric.contract.version="v1"       io.apexfabric.hardware.profile="intel-285h"       io.apexfabric.image.role="solution-runtime"       io.apexfabric.models.delivery="baked-in"       io.apexfabric.ui.included="false"       io.apexfabric.runtime-base.digest="${INTEL_TRAFFIC_PILOT_RUNTIME_BASE_DIGEST}"
+
+EXPOSE 8080
+USER 10001:10001
+CMD ["python", "-m", "traffic_pilot_runtime.solution_image_entrypoint"]

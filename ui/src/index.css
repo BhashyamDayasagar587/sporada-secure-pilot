@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+/*
+ * Make `dark:` variants class-based instead of the Tailwind v4 default
+ * (prefers-color-scheme media query). This control-center build is light-only;
+ * with no `.dark` class on <html>, every legacy `dark:` utility stays inert, so
+ * older pages render their light base styles instead of following the OS theme.
+ */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Operational control-center palette.
+ * Light data surfaces framed by a deep-navy command rail; blue = primary/brand,
+ * and a status ramp (ok/warn/crit) so every panel reads like a status board.
+ * Tailwind v4 turns each --color-* token into utilities (bg-*, text-*, border-*).
+ */
+@theme {
+  /* command-blue brand ramp */
+  --color-brand-50:  #eff6ff;
+  --color-brand-100: #dbeafe;
+  --color-brand-200: #bfdbfe;
+  --color-brand-300: #93c5fd;
+  --color-brand-400: #60a5fa;
+  --color-brand-500: #2563eb;
+  --color-brand-600: #1d4ed8;
+  --color-brand-700: #1e40af;
+  --color-brand-800: #1e3a8a;
+  --color-brand-900: #172554;
+
+  /* status semantics — ok (green), warn (amber), crit (red) */
+  --color-ok-100:   #d1fae5;
+  --color-ok-400:   #34d399;
+  --color-ok-500:   #059669;
+  --color-ok-700:   #047857;
+  --color-warn-100: #fef3c7;
+  --color-warn-500: #d97706;
+  --color-warn-700: #b45309;
+  --color-crit-100: #fee2e2;
+  --color-crit-500: #dc2626;
+  --color-crit-700: #b91c1c;
+
+  /* surfaces */
+  --color-canvas: #eef2f7; /* app background */
+  --color-panel:  #ffffff; /* cards / header */
+  --color-rail:   #0f1f3d; /* deep-navy command rail */
+  --color-rail-2: #16294d; /* rail hover / nested */
+  --color-ink:    #0f172a; /* primary text on light */
+}
+
+html, body, #root { height: 100%; }
+body {
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  background: var(--color-canvas);
+  color: var(--color-ink);
+}

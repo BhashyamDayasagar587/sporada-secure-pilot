@@ -1,0 +1,11 @@
+ui
+ui/**
+.git
+.git/**
+run/*.log
+run/*.pid
+run/*.mp4
+**/__pycache__
+.pytest_cache
+delivery/**/image-*.tar
+delivery/**/*.sha256

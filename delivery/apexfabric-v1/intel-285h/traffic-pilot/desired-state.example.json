@@ -1,0 +1,38 @@
+{
+  "edge_id": "intel-box-example",
+  "revision": 1,
+  "cameras": [
+    {
+      "camera_id": "count-whole-frame",
+      "source": "file:/run/secrets/apexfabric/count-whole-frame.rtsp",
+      "fps": 8,
+      "apps": ["vehicle_counting", "pedestrian_counting"]
+    },
+    {
+      "camera_id": "count-line",
+      "source": "file:/run/secrets/apexfabric/count-line.rtsp",
+      "fps": 8,
+      "apps": ["vehicle_counting"],
+      "config": {
+        "line": {
+          "name": "gate_line",
+          "a": [0.15, 0.55],
+          "b": [0.85, 0.55],
+          "direction": "both"
+        }
+      }
+    },
+    {
+      "camera_id": "smoke-and-plate-zone",
+      "source": "file:/run/secrets/apexfabric/smoke-and-plate-zone.rtsp",
+      "fps": 5,
+      "apps": ["fire_smoke_detection", "plate_detection"],
+      "config": {
+        "zone": {
+          "name": "active_area",
+          "poly": [[0.05, 0.05], [0.95, 0.05], [0.95, 0.95], [0.05, 0.95]]
+        }
+      }
+    }
+  ]
+}

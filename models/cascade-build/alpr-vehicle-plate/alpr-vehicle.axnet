@@ -1,0 +1,13 @@
+model=../traffic-pilot/models/cascade-build/alpr-vehicle-plate/alpr-vehicle/1/model.json
+devices=metis-0:1:0
+double_buffer=False
+dmabuf_inputs=True
+dmabuf_outputs=True
+num_children=3
+preprocess0_lib=libtransform_resize_cl.so
+preprocess0_options=width:640;height:640;padding:114;letterbox:1;scale_up:1;to_tensor:1;mean:0.,0.,0.;std:1.,1.,1.;quant_scale:0.003921568859368563;quant_zeropoint:-128.0;format:rgba
+preprocess1_lib=libtransform_padding.so
+preprocess1_options=padding:0,0,1,1,1,15,0,0;fill:-128
+postprocess0_lib=libdecode_yolov8.so
+postprocess0_options=meta_key:vehicle_detections;classes:80;confidence_threshold:0.4;scales:0.040985796600580215,0.0627891793847084,0.07168709486722946,0.15866044163703918,0.7860863208770752,0.5634324550628662;padding:0,0,0,0,0,0,0,60|0,0,0,0,0,0,0,60|0,0,0,0,0,0,0,60|0,0,0,0,0,0,0,48|0,0,0,0,0,0,0,48|0,0,0,0,0,0,0,48;zero_points:-106,-125,-125,117,123,120;topk:300;multiclass:0;dfl_size:1;model_width:640;model_height:640;scale_up:1;letterbox:1
+postprocess0_mode=read

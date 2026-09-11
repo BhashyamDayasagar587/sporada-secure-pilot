@@ -1,0 +1,61 @@
+# Calibration data
+tools/calibration/**/*.jpg
+tools/calibration/**/*.png
+
+# Local config overrides
+config/worker.local.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+.python-version
+
+# Node / Vite
+ui/node_modules/
+ui/dist/
+ui/.vite/
+ui/*.timestamp-*.mjs
+
+# Editor
+.vscode/
+.idea/
+
+# Runtime
+*.log
+
+# host runtime state
+run/
+ui/tsconfig.tsbuildinfo
+
+# Model-improvement experiment scratch (large, reproducible — not committed)
+models/aipu-compare/
+datasets/calib_local/
+datasets/calib_idd/
+datasets/calib_mix/
+tmp/vehicle_compare/
+tmp/vehicle_verify/
+/yolo26s.onnx
+/yolo26s.pt
+
+# never commit build-time quantized intermediates
+**/quantized_model.pt
+
+# Model-selection experiment scratch (June 2026) — not the deployed pipeline
+/yolov8n.pt
+/yolov8s.pt
+/yolov8m.pt
+/yolov8l.pt
+/yolo11s.pt
+/yolo11m.pt
+models/weights/yolov8m_ultralytics_v8.1.0.onnx
+models/weights/yolo26s-202601-official.onnx
+models/weights/yolov8s_960.onnx
+models/cascade-build-v8s960/
+config/cascade/vehicle-v8s.yaml
+config/cascade/vehicle-v8m.yaml
+config/cascade/vehicle-26s-official.yaml
+config/cascade/vehicle-plate-cascade-v8s960.yaml
+tmp/live_s/
+tmp/strategy_verify/

@@ -1,0 +1,16 @@
+model=../traffic-pilot/models/cascade-build-v8s/alpr-vehicle-plate-v8s/alpr-plate/1/model.json
+devices=metis-0:1:0
+double_buffer=False
+dmabuf_inputs=True
+dmabuf_outputs=True
+num_children=0
+meta=vehicle_detections_adapted_as_input_for_plate_detections
+preprocess0_lib=libtransform_roicrop_cl.so
+preprocess0_options=meta_key:vehicle_detections_adapted_as_input_for_plate_detections;format:rgba
+preprocess1_lib=libtransform_resize_cl.so
+preprocess1_options=width:224;height:224;padding:114;letterbox:1;scale_up:1;to_tensor:1;mean:0.,0.,0.;std:1.,1.,1.;quant_scale:0.003921568859368563;quant_zeropoint:-128.0;format:rgba
+preprocess2_lib=libtransform_padding.so
+preprocess2_options=padding:0,0,1,1,1,15,0,0;fill:-128
+postprocess0_lib=libdecode_yolov8.so
+postprocess0_options=meta_key:plate_detections;master_meta:vehicle_detections;association_meta:vehicle_detections_adapted_as_input_for_plate_detections;classes:1;confidence_threshold:0.25;scales:0.029560120776295662,0.008428388275206089,0.005917323753237724,0.4677809774875641,0.04636017233133316,0.0917755588889122;padding:0,0,0,0,0,0,0,60|0,0,0,0,0,0,0,60|0,0,0,0,0,0,0,60|0,0,0,0,0,0,0,63|0,0,0,0,0,0,0,63|0,0,0,0,0,0,0,63;zero_points:-123,-186,-426,121,547,275;topk:300;multiclass:0;dfl_size:1;model_width:224;model_height:224;scale_up:1;letterbox:1
+postprocess0_mode=read
