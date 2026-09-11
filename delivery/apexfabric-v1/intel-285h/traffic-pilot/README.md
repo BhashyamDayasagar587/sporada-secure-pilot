@@ -1,3 +1,36 @@
+# Traffic Pilot Runtime - ApexFabric V1 Intel Delivery
+
+This v3 package follows the same API contract shape as the latest `Documents/PIPELINE` traffic delivery while limiting active applications to vehicle counting, pedestrian counting, ANPR, and fire/smoke detection.
+
+## Image
+
+```text
+traffic-pilot-runtime:intel-285h-2026.09.11-v3
+```
+
+The image listens on `0.0.0.0:8080`, runs as UID/GID `10001`, uses the Intel 285H runtime base, and has no UI or Redis dependency. Mount desired state at `/configs/desired_state.json`, camera secrets under `/run/secrets/apexfabric`, and persistent state at `/state`.
+
+## Public Contract
+
+- `GET /healthz`
+- `GET /readyz`
+- `GET /metrics`
+- `GET /events` as continuous server-sent events with idle heartbeats
+- `GET /snapshots/<state-relative-path>` for event images
+
+`/metrics` follows `metrics.schema.json`. Analytics events follow `analytics-event.schema.json`; snapshot fields use `snapshot_ref` and `snapshot_url`, not host filesystem paths.
+
+## Desired State
+
+Each camera uses `solution_pack: "traffic"` and one or more of these apps:
+
+- `vehicle_counting`
+- `pedestrian_counting`
+- `anpr`
+- `fire_smoke_detection`
+
+Geometry is optional. If no line or zone is supplied, counting uses the whole frame. When geometry is supplied, use typed `config.lines.<app>` or `config.zones.<app>` as shown in `desired-state.example.json`.
+
 # Traffic Pilot Limited Runtime - ApexFabric V1 Intel Delivery
 
 API-only traffic-pilot runtime for Intel 285H limited to people counting, vehicle counting, ANPR, and fire/smoke detection. The image contains no UI, no npm,

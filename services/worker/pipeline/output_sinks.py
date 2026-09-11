@@ -770,8 +770,19 @@ def simple_event(event: Mapping[str, object]) -> dict:
         payload["details"]["cooldown_seconds"] = cooldown
     snapshot = event.get("snapshot")
     if isinstance(snapshot, Mapping):
-        payload["snapshot"] = dict(snapshot)
-        payload["details"]["snapshot_path"] = snapshot.get("path")
+        ref = snapshot.get("ref")
+        url = snapshot.get("url")
+        if ref:
+            payload["snapshot_ref"] = ref
+            payload["snapshot_url"] = url or f"/snapshots/{str(ref).lstrip('/')}"
+            payload["snapshot_content_type"] = snapshot.get("content_type") or "image/jpeg"
+            payload["snapshot_assets"] = {
+                "event_frame": {
+                    "ref": ref,
+                    "url": url or f"/snapshots/{str(ref).lstrip('/')}",
+                    "content_type": snapshot.get("content_type") or "image/jpeg",
+                }
+            }
     if not payload["details"]:
         payload.pop("details")
     return payload

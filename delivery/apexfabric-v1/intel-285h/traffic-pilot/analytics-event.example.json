@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "event_id": "cam-fire-01:fire_smoke_detection:2026-09-11T10:00:02Z",
+  "timestamp": "2026-09-11T10:00:02Z",
+  "camera_id": "cam-fire-01",
+  "solution_pack": "traffic",
+  "application": "fire_smoke_detection",
+  "event_type": "smoke_detected",
+  "payload": {
+    "subject": {
+      "type": "smoke",
+      "confidence": 0.91,
+      "bbox": {
+        "x1": 10,
+        "y1": 12,
+        "x2": 50,
+        "y2": 60
+      }
+    },
+    "snapshot_ref": "snapshots/cam-fire-01/2026-09-11T10-00-02Z-smoke_detected-42.jpg",
+    "snapshot_url": "/snapshots/snapshots/cam-fire-01/2026-09-11T10-00-02Z-smoke_detected-42.jpg",
+    "snapshot_content_type": "image/jpeg",
+    "snapshot_assets": {
+      "event_frame": {
+        "ref": "snapshots/cam-fire-01/2026-09-11T10-00-02Z-smoke_detected-42.jpg",
+        "url": "/snapshots/snapshots/cam-fire-01/2026-09-11T10-00-02Z-smoke_detected-42.jpg",
+        "content_type": "image/jpeg"
+      }
+    }
+  }
+}

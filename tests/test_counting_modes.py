@@ -121,15 +121,18 @@ def test_smoke_fire_alert_writes_snapshot_and_output_payload(tmp_path, monkeypat
     assert len(packet.analytics_events) == 1
     event = packet.analytics_events[0]
     snapshot = event["snapshot"]
-    snapshot_path = Path(snapshot["path"])
     assert event["type"] == "smoke_detected"
     assert snapshot["format"] == "jpg"
     assert snapshot["frame_index"] == 7
     assert snapshot["bbox"] == [10, 12, 50, 60]
-    assert snapshot_path.exists()
+    assert snapshot["ref"].endswith("smoke_detected-7.jpg")
+    assert snapshot["url"] == f"/snapshots/{snapshot['ref']}"
+    assert snapshot["content_type"] == "image/jpeg"
     payload = simple_event(event)
-    assert payload["snapshot"]["path"] == str(snapshot_path)
-    assert payload["details"]["snapshot_path"] == str(snapshot_path)
+    assert payload["snapshot_ref"] == snapshot["ref"]
+    assert payload["snapshot_url"] == snapshot["url"]
+    assert payload["snapshot_assets"]["event_frame"]["url"] == snapshot["url"]
+    assert "snapshot" not in payload
 
 def test_analytics_sink_has_no_redis_default(monkeypatch):
     monkeypatch.delenv("ANALYTICS_REDIS_TAP", raising=False)

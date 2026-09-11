@@ -808,12 +808,22 @@ class TrafficAnalyticsStage(InferenceStage):
         if not ok:
             return None
         x1, y1, x2, y2 = detection.bbox
+        ref = self._snapshot_ref(path)
         return {
-            "path": str(path),
+            "ref": ref,
+            "url": f"/snapshots/{ref}",
+            "content_type": "image/jpeg",
             "format": "jpg",
             "frame_index": packet.index,
             "bbox": [int(x1), int(y1), int(x2), int(y2)],
         }
+
+    def _snapshot_ref(self, path: Path) -> str:
+        state_root = Path(os.getenv("APEXFABRIC_STATE_DIR", "/state"))
+        try:
+            return str(path.resolve().relative_to(state_root.resolve())).replace(os.sep, "/")
+        except (OSError, ValueError):
+            return str(path.name)
 
     def _use_case_state(self, camera_name, runtime):
         states = {}

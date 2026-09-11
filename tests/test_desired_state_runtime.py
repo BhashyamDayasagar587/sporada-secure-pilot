@@ -22,6 +22,7 @@ def _desired(tmp_path: Path, apps, config=None):
         "cameras": [{
             "camera_id": "cam1",
             "source": f"file:{source}",
+            "solution_pack": "traffic",
             "fps": 8,
             "apps": apps,
             "config": config or {},
@@ -35,7 +36,7 @@ def test_desired_state_requires_secret_source(tmp_path):
     desired.write_text(json.dumps({
         "edge_id": "edge-test",
         "revision": 1,
-        "cameras": [{"camera_id": "cam1", "source": "rtsp://camera", "apps": ["vehicle_counting"]}],
+        "cameras": [{"camera_id": "cam1", "source": "rtsp://camera", "solution_pack": "traffic", "apps": ["vehicle_counting"]}],
     }), encoding="utf-8")
 
     with pytest.raises(ValueError, match="mounted Secret"):
@@ -113,6 +114,7 @@ def test_desired_state_accepts_id_alias(tmp_path):
         "cameras": [{
             "id": "cam1",
             "source": f"file:{source}",
+            "solution_pack": "traffic",
             "apps": ["vehicle_counting"],
         }],
     }), encoding="utf-8")
@@ -135,6 +137,7 @@ def test_desired_state_rejects_conflicting_camera_ids(tmp_path):
             "camera_id": "cam1",
             "id": "other",
             "source": f"file:{source}",
+            "solution_pack": "traffic",
             "apps": ["vehicle_counting"],
         }],
     }), encoding="utf-8")

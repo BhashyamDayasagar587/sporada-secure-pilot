@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://apexfabric.local/schemas/v1/traffic-analytics-event.json",
+  "title": "ApexFabric Traffic Analytics Event V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_id",
+    "timestamp",
+    "camera_id",
+    "solution_pack",
+    "application",
+    "event_type",
+    "payload"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "event_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "camera_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "solution_pack": {
+      "const": "traffic"
+    },
+    "application": {
+      "enum": [
+        "anpr",
+        "vehicle_counting",
+        "pedestrian_counting",
+        "fire_smoke_detection"
+      ]
+    },
+    "event_type": {
+      "enum": [
+        "plate_read_event",
+        "vehicle_count_event",
+        "pedestrian_count_event",
+        "fire_detected",
+        "smoke_detected"
+      ]
+    },
+    "payload": {
+      "type": "object",
+      "properties": {
+        "snapshot_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "snapshot_url": {
+          "type": "string",
+          "pattern": "^/snapshots/"
+        },
+        "snapshot_content_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "snapshot_assets": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/snapshot_asset"
+          }
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "snapshot_asset": {
+      "type": "object",
+      "required": [
+        "ref",
+        "url",
+        "content_type"
+      ],
+      "properties": {
+        "ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "type": "string",
+          "pattern": "^/snapshots/"
+        },
+        "content_type": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

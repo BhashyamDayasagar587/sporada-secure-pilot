@@ -3,67 +3,35 @@
   "revision": 1,
   "cameras": [
     {
-      "camera_id": "count-whole-frame",
-      "source": "file:/run/secrets/apexfabric/count-whole-frame.rtsp",
-      "solution_pack": "traffic-pilot",
+      "camera_id": "cam-count-01",
+      "source": "file:/run/secrets/apexfabric/cam-count-01.rtsp",
+      "solution_pack": "traffic",
       "fps": 8,
-      "apps": [
-        "vehicle_counting",
-        "pedestrian_counting"
-      ]
-    },
-    {
-      "camera_id": "count-line",
-      "source": "file:/run/secrets/apexfabric/count-line.rtsp",
-      "solution_pack": "traffic-pilot",
-      "fps": 8,
-      "apps": [
-        "vehicle_counting"
-      ],
+      "apps": ["vehicle_counting", "pedestrian_counting"],
       "config": {
-        "line": {
-          "name": "gate_line",
-          "a": [
-            0.15,
-            0.55
+        "lines": {
+          "vehicle_counting": [
+            {"name": "vehicle_gate", "a": [0.15, 0.68], "b": [0.85, 0.68], "direction": "both"}
           ],
-          "b": [
-            0.85,
-            0.55
-          ],
-          "direction": "both"
+          "pedestrian_counting": [
+            {"name": "pedestrian_gate", "a": [0.15, 0.78], "b": [0.85, 0.78], "direction": "both"}
+          ]
         }
       }
     },
     {
-      "camera_id": "anpr-smoke-zone",
-      "source": "file:/run/secrets/apexfabric/anpr-smoke-zone.rtsp",
-      "solution_pack": "traffic-pilot",
+      "camera_id": "cam-alert-01",
+      "source": "file:/run/secrets/apexfabric/cam-alert-01.rtsp",
+      "solution_pack": "traffic",
       "fps": 5,
-      "apps": [
-        "anpr",
-        "fire_smoke_detection"
-      ],
+      "apps": ["anpr", "fire_smoke_detection"],
       "config": {
-        "zone": {
-          "name": "active_area",
-          "poly": [
-            [
-              0.05,
-              0.05
-            ],
-            [
-              0.95,
-              0.05
-            ],
-            [
-              0.95,
-              0.95
-            ],
-            [
-              0.05,
-              0.95
-            ]
+        "zones": {
+          "anpr": [
+            {"name": "plate_roi", "poly": [[0.1, 0.4], [0.9, 0.4], [0.9, 0.95], [0.1, 0.95]]}
+          ],
+          "fire_smoke_detection": [
+            {"name": "alert_area", "poly": [[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0]]}
           ]
         }
       }

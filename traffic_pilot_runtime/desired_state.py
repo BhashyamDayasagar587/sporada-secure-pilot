@@ -109,13 +109,15 @@ class DesiredStateValidator:
         unknown = set(camera) - {"camera_id", "id", "name", "source", "fps", "apps", "config", "solution_pack"}
         if unknown:
             raise ValueError(f"camera at index {index} has unknown fields: {sorted(unknown)}")
-        missing = {"source", "apps"} - set(camera)
+        missing = {"source", "apps", "solution_pack"} - set(camera)
         if missing:
             raise ValueError(f"camera at index {index} is missing fields: {sorted(missing)}")
         if "camera_id" not in camera and "id" not in camera:
             raise ValueError(f"camera at index {index} is missing fields: ['camera_id']")
         if "camera_id" in camera and "id" in camera and camera["camera_id"] != camera["id"]:
             raise ValueError(f"camera at index {index} has conflicting camera_id and id")
+        if camera.get("solution_pack") != "traffic":
+            raise ValueError(f"camera at index {index} solution_pack must be traffic")
         camera_id = _camera_id(camera)
         if not isinstance(camera_id, str) or not camera_id.strip():
             raise ValueError(f"camera at index {index} has an invalid camera_id")

@@ -1,0 +1,22 @@
+app_id: fire_smoke_detection
+solution_pack: traffic
+version: 0.1.0
+description: Detect fire and smoke and emit alert events with retrievable snapshots.
+requires:
+  data:
+    - decoded_frames
+    - zone_geometry
+models:
+  - smoke_fire_detector
+produces:
+  events:
+    - fire_detected
+    - smoke_detected
+  snapshots:
+    - event_frame
+hardware:
+  preferred:
+    smoke_fire_detector: GPU
+    fire_smoke_detection_app: CPU
+policy:
+  snapshot_url_prefix: /snapshots/
