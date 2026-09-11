@@ -1,6 +1,6 @@
-# Traffic Pilot Runtime - ApexFabric V1 Intel Delivery
+# Traffic Pilot Limited Runtime - ApexFabric V1 Intel Delivery
 
-API-only traffic-pilot runtime for Intel 285H. The image contains no UI, no npm,
+API-only traffic-pilot runtime for Intel 285H limited to people counting, vehicle counting, ANPR, and fire/smoke detection. The image contains no UI, no npm,
 and no Vite dashboard. It exposes runtime control and observation endpoints on
 `:8080`.
 
@@ -13,7 +13,8 @@ python -m traffic_pilot_runtime.solution_image_entrypoint
 ```
 
 It reads `/configs/desired_state.json`, validates it against the V1 contract,
-compiles a dynamic graph containing only active apps, writes
+accepts only `vehicle_counting`, `pedestrian_counting`, `anpr`/`plate_detection`,
+and `fire_smoke_detection`, compiles the active runtime plan, writes
 `/plans/traffic-pilot.runtime_plan.json`, generates the worker camera config, and
 starts the OpenVINO worker.
 
@@ -52,8 +53,6 @@ line exists      -> line crossing count
 else zone exists -> zone count
 else             -> whole-frame count
 ```
-
-The dynamic graph includes only nodes required by active apps.
 
 
 ## Smoke/fire snapshots

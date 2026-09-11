@@ -8,10 +8,6 @@ from .desired_state import DesiredCamera, DesiredState
 TRACK_APPS = {
     "vehicle_counting",
     "pedestrian_counting",
-    "wrong_way_driving_detection",
-    "stopped_vehicle_detection",
-    "vehicle_in_pedestrian_zone_alert",
-    "parking_violation_detection",
 }
 PLATE_APPS = {"plate_detection"}
 SMOKE_APPS = {"fire_smoke_detection"}
@@ -25,10 +21,6 @@ NODE_CATALOG = {
     "smoke_fire_detector": {"label": "Smoke/Fire Detector", "kind": "model", "device": "GPU"},
     "vehicle_counting": {"label": "Vehicle Counting", "kind": "app"},
     "pedestrian_counting": {"label": "Pedestrian Counting", "kind": "app"},
-    "wrong_way_driving_detection": {"label": "Wrong Way Detection", "kind": "app"},
-    "stopped_vehicle_detection": {"label": "Stopped Vehicle Detection", "kind": "app"},
-    "vehicle_in_pedestrian_zone_alert": {"label": "Vehicle In Pedestrian Zone", "kind": "app"},
-    "parking_violation_detection": {"label": "Parking Violation", "kind": "app"},
     "plate_detection": {"label": "Plate Detection", "kind": "app"},
     "fire_smoke_detection": {"label": "Fire/Smoke Alert", "kind": "app"},
     "snapshot_storage": {"label": "Snapshot Storage", "kind": "output"},

@@ -10,39 +10,24 @@ STREAM_SCHEMES = ("rtsp://", "rtsps://", "rtmp://", "http://", "https://")
 SUPPORTED_APPS = {
     "vehicle_counting",
     "pedestrian_counting",
-    "wrong_way_driving_detection",
-    "stopped_vehicle_detection",
-    "vehicle_in_pedestrian_zone_alert",
-    "parking_violation_detection",
     "plate_detection",
     "fire_smoke_detection",
 }
 APP_ALIASES = {
     "anpr": "plate_detection",
-    "wrong_way": "wrong_way_driving_detection",
-    "illegal_parking": "parking_violation_detection",
 }
 APP_CONFIG_KEYS = {
     "plate_detection": ("plate_detection", "anpr"),
-    "wrong_way_driving_detection": ("wrong_way_driving_detection", "wrong_way"),
-    "parking_violation_detection": ("parking_violation_detection", "illegal_parking"),
 }
-LINE_APPS = {"vehicle_counting", "pedestrian_counting", "wrong_way_driving_detection"}
+LINE_APPS = {"vehicle_counting", "pedestrian_counting"}
 ZONE_APPS = {
     "vehicle_counting",
     "pedestrian_counting",
-    "stopped_vehicle_detection",
-    "vehicle_in_pedestrian_zone_alert",
-    "parking_violation_detection",
     "plate_detection",
     "fire_smoke_detection",
 }
-REQUIRED_LINE_APPS = {"wrong_way_driving_detection"}
-REQUIRED_ZONE_APPS = {
-    "stopped_vehicle_detection",
-    "vehicle_in_pedestrian_zone_alert",
-    "parking_violation_detection",
-}
+REQUIRED_LINE_APPS = set()
+REQUIRED_ZONE_APPS = set()
 
 
 @dataclass(frozen=True)
@@ -198,7 +183,7 @@ class DesiredStateValidator:
         for index, item in enumerate(zones):
             self._validate_zone(camera_id, index, item)
         if apps & REQUIRED_LINE_APPS and not lines:
-            raise ValueError(f"camera {camera_id} app wrong_way_driving_detection requires a line")
+            raise ValueError(f"camera {camera_id} apps {sorted(apps & REQUIRED_LINE_APPS)} require a line")
         if apps & REQUIRED_ZONE_APPS and not zones:
             raise ValueError(f"camera {camera_id} apps {sorted(apps & REQUIRED_ZONE_APPS)} require a zone")
 

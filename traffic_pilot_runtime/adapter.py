@@ -9,21 +9,15 @@ from .desired_state import DesiredCamera, DesiredState
 LINE_PURPOSE = {
     "vehicle_counting": "vehicle_counting",
     "pedestrian_counting": "pedestrian_counting",
-    "wrong_way_driving_detection": "wrong_way_direction",
 }
 ZONE_TYPE = {
     "vehicle_counting": "vehicle_counting",
     "pedestrian_counting": "pedestrian_counting",
-    "stopped_vehicle_detection": "stopped_vehicle",
-    "vehicle_in_pedestrian_zone_alert": "pedestrian",
-    "parking_violation_detection": "no_parking",
     "plate_detection": "plate_roi",
     "fire_smoke_detection": "fire_smoke",
 }
 APP_CONFIG_KEYS = {
     "plate_detection": ("plate_detection", "anpr"),
-    "wrong_way_driving_detection": ("wrong_way_driving_detection", "wrong_way"),
-    "parking_violation_detection": ("parking_violation_detection", "illegal_parking"),
 }
 
 

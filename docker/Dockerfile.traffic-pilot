@@ -13,10 +13,10 @@ COPY delivery/apexfabric-v1/intel-285h/traffic-pilot /opt/traffic-pilot/delivery
 
 RUN python -m py_compile traffic_pilot_runtime/*.py services/worker/stream_fleet_openvino.py     && test -f /opt/traffic-pilot/models/openvino/vehicle.xml     && test -f /opt/traffic-pilot/models/openvino/license_plate.xml     && test -f /opt/traffic-pilot/models/openvino/ocr.xml     && test -f /opt/traffic-pilot/models/openvino/smoke_fire.xml     && test "$(id -u apexruntime)" = "10001"
 
-ARG IMAGE_VERSION=2026.09.11-v1
+ARG IMAGE_VERSION=2026.09.11-v2
 ARG INTEL_TRAFFIC_PILOT_RUNTIME_BASE_DIGEST=unresolved
 
-LABEL org.opencontainers.image.title="ApexFabric Traffic Pilot Runtime"       org.opencontainers.image.description="API-only Intel 285H traffic-pilot runtime"       org.opencontainers.image.version="${IMAGE_VERSION}"       io.apexfabric.contract.version="v1"       io.apexfabric.hardware.profile="intel-285h"       io.apexfabric.image.role="solution-runtime"       io.apexfabric.models.delivery="baked-in"       io.apexfabric.ui.included="false"       io.apexfabric.runtime-base.digest="${INTEL_TRAFFIC_PILOT_RUNTIME_BASE_DIGEST}"
+LABEL org.opencontainers.image.title="ApexFabric Traffic Pilot Limited Runtime"       org.opencontainers.image.description="API-only Intel 285H traffic-pilot runtime limited to counting, ANPR, and smoke/fire"       org.opencontainers.image.version="${IMAGE_VERSION}"       io.apexfabric.contract.version="v1"       io.apexfabric.hardware.profile="intel-285h"       io.apexfabric.image.role="solution-runtime"       io.apexfabric.models.delivery="baked-in"       io.apexfabric.ui.included="false"       io.apexfabric.runtime-base.digest="${INTEL_TRAFFIC_PILOT_RUNTIME_BASE_DIGEST}"
 
 EXPOSE 8080
 USER 10001:10001

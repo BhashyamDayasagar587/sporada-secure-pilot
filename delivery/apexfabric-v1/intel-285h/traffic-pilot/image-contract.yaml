@@ -1,11 +1,13 @@
-name: traffic-pilot-runtime
-version: 2026.09.11-v1
+name: traffic-pilot-runtime-limited
+version: 2026.09.11-v2
 contractVersion: v1
 architectures: [amd64]
 hardwareProfile: intel-285h
 runtimeBase:
   image: apexfabric-intel-traffic-runtime-base:intel-285h-2026.08.24-v1
   deployment: reused-intel-environment-base
+capabilities:
+  apps: [vehicle_counting, pedestrian_counting, anpr, plate_detection, fire_smoke_detection]
 models:
   delivery: baked-in
   root: /opt/traffic-pilot/models/openvino

@@ -142,7 +142,7 @@ def test_desired_state_rejects_conflicting_camera_ids(tmp_path):
     with pytest.raises(ValueError, match="conflicting camera_id and id"):
         DesiredStateValidator(secrets).load(desired)
 
-def test_desired_state_accepts_pipeline_traffic_app_aliases(tmp_path):
+def test_desired_state_accepts_limited_pipeline_app_aliases(tmp_path):
     secrets = tmp_path / "secrets"
     secrets.mkdir()
     source = secrets / "cam-traffic-01.rtsp"
@@ -156,14 +156,13 @@ def test_desired_state_accepts_pipeline_traffic_app_aliases(tmp_path):
             "source": f"file:{source}",
             "solution_pack": "traffic",
             "fps": 8,
-            "apps": ["anpr", "wrong_way", "vehicle_counting", "pedestrian_counting", "illegal_parking"],
+            "apps": ["anpr", "vehicle_counting", "pedestrian_counting", "fire_smoke_detection"],
             "config": {
                 "zones": {
                     "anpr": [{"name": "plate_roi", "poly": [[0.1, 0.4], [0.9, 0.4], [0.9, 0.95], [0.1, 0.95]]}],
-                    "illegal_parking": [{"name": "no_parking", "poly": [[0.2, 0.3], [0.8, 0.3], [0.8, 0.9], [0.2, 0.9]]}],
+                    "fire_smoke_detection": [{"name": "fire_area", "poly": [[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0]]}],
                 },
                 "lines": {
-                    "wrong_way": [{"name": "wrong_way_line", "a": [0.15, 0.58], "b": [0.85, 0.58], "direction": "a_to_b"}],
                     "vehicle_counting": [{"name": "vehicle_count_line", "a": [0.15, 0.68], "b": [0.85, 0.68]}],
                     "pedestrian_counting": [{"name": "pedestrian_count_line", "a": [0.15, 0.78], "b": [0.85, 0.78]}],
                 },
@@ -177,12 +176,20 @@ def test_desired_state_accepts_pipeline_traffic_app_aliases(tmp_path):
     camera = state.cameras[0]
     assert camera.apps == (
         "plate_detection",
-        "wrong_way_driving_detection",
         "vehicle_counting",
         "pedestrian_counting",
-        "parking_violation_detection",
+        "fire_smoke_detection",
     )
     analytics = payload["cameras"][0]["analytics"]
     assert analytics["plate_detection"]["zones"][0]["type"] == "plate_roi"
-    assert analytics["wrong_way_driving_detection"]["lines"][0]["purpose"] == "wrong_way_direction"
-    assert analytics["parking_violation_detection"]["zones"][0]["type"] == "no_parking"
+    assert analytics["vehicle_counting"]["lines"][0]["purpose"] == "vehicle_counting"
+    assert analytics["pedestrian_counting"]["lines"][0]["purpose"] == "pedestrian_counting"
+    assert analytics["fire_smoke_detection"]["zones"][0]["type"] == "fire_smoke"
+
+
+def test_desired_state_rejects_apps_not_in_limited_image(tmp_path):
+    desired_path, secrets = _desired(tmp_path, ["wrong_way", "illegal_parking"])
+
+    with pytest.raises(ValueError, match="unsupported apps"):
+        DesiredStateValidator(secrets).load(desired_path)
+
