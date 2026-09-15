@@ -285,6 +285,7 @@ class TrafficAnalyticsStage(InferenceStage):
                 self.previous_anchors[(packet.name, track_id)] = current_anchor
             self._handle_plate_events(packet, camera_config, runtime)
             self._handle_smoke_fire_events(packet, camera_config, runtime)
+            self._handle_per_frame_counts(packet, camera_config, runtime)
             packet.analytics_state["use_cases"] = self._use_case_state(packet.name, runtime)
 
     def _tag_memberships(self, packet, camera_config, runtime, detection):
@@ -923,6 +924,78 @@ class TrafficAnalyticsStage(InferenceStage):
             event["direction"] = direction
             event["direction_count"] = direction_count
         return event
+
+    def _handle_per_frame_counts(self, packet, camera_config, runtime):
+        """Emit per-frame instantaneous counts for vehicle/pedestrian in events[].
+
+        Unlike cumulative line/zone dedup, this fires EVERY frame where the
+        use_case is enabled, with value = count in this frame.
+        Respects ROI: if zones are configured for the use_case, only detections
+        whose anchor is inside any of those zones are counted; otherwise whole
+        frame is counted. Line-mode still counts whole frame per-frame (line is
+        not a region).
+        """
+        cases = (
+            ("vehicle_counting", "vehicle", "vehicle_count_per_frame"),
+            ("pedestrian_counting", "pedestrian", "pedestrian_count_per_frame"),
+        )
+        for use_case, class_group, event_type in cases:
+            if use_case not in runtime:
+                continue
+            config = runtime.get(use_case) or {}
+            # per-frame only if use_case is effectively enabled (has entry)
+            # count matching detections in this packet (already filtered by ROI if needed)
+            zones = config.get("zones") or config.get("constraint_zones") or []
+            # if zones exist, count only inside any zone; else count whole frame
+            per_frame_value = 0
+            for det in packet.detections:
+                if det.model_name != "vehicle":
+                    continue
+                if not class_matches(det, class_group):
+                    continue
+                if det.metadata.get("track_id") is None:
+                    # allow untracked per-frame counting too? require track for consistency but count even without
+                    # if no track_id, still count as instantaneous object
+                    pass
+                if zones:
+                    pt = anchor(det)
+                    if not any(
+                        point_in_polygon(pt, geometry_points(z, packet.frame.shape, camera_config))
+                        for z in zones
+                    ):
+                        continue
+                per_frame_value += 1
+
+            # choose geometry for event: first zone if exists else whole_frame
+            geometry_zone = None
+            zone_index = None
+            if zones:
+                geometry_zone = zones[0]
+                zone_index = 0
+            else:
+                geometry_zone = WHOLE_FRAME_ZONE
+                zone_index = 0
+
+            # emit synthetic per-frame event (no track-specific dedup)
+            observed_at = datetime.now(timezone.utc).isoformat()
+            event = {
+                "observation_id": f"{packet.name}:{use_case}:{event_type}:{packet.index}:{observed_at}",
+                "observed_at": observed_at,
+                "use_case": use_case,
+                "type": event_type,
+                "subject": {
+                    "track_id": None,
+                    "parent_track_id": None,
+                    "class": class_group,
+                    "confidence": None,
+                    "bbox": None,
+                },
+                "geometry": geometry_ref(geometry_zone, "zone", zone_index),
+                "value": per_frame_value,
+                "per_frame": True,
+                "frame_index": packet.index,
+            }
+            packet.add_event(event)
 
     def _direction_counts(self, camera_name, use_case, line_id):
         prefix = (camera_name, use_case, line_id)

@@ -41,10 +41,15 @@ def test_vehicle_counting_line_mode_counts_crossing_once():
 
     _, p2 = _run_two(stage, _det(bbox=[40, 20, 60, 40]), _det(bbox=[40, 60, 60, 80]))
 
-    assert len(p2.analytics_events) == 1
-    assert p2.analytics_events[0]["type"] == "vehicle_count"
-    assert p2.analytics_events[0]["geometry"]["id"] == "line-main"
-    assert p2.analytics_events[0]["value"] == 1
+    cumulative = [e for e in p2.analytics_events if not e["type"].endswith("_per_frame")]
+    per_frame = [e for e in p2.analytics_events if e["type"].endswith("_per_frame")]
+    assert len(cumulative) == 1
+    assert cumulative[0]["type"] == "vehicle_count"
+    assert cumulative[0]["geometry"]["id"] == "line-main"
+    assert cumulative[0]["value"] == 1
+    assert len(per_frame) == 1
+    assert per_frame[0]["type"] == "vehicle_count_per_frame"
+    assert per_frame[0]["value"] == 1
 
 
 def test_line_mode_has_priority_over_zone_when_both_exist():
@@ -55,7 +60,11 @@ def test_line_mode_has_priority_over_zone_when_both_exist():
 
     _, p2 = _run_two(stage, _det(bbox=[40, 40, 60, 60]), _det(bbox=[42, 40, 62, 60]))
 
-    assert p2.analytics_events == []
+    cumulative = [e for e in p2.analytics_events if not e["type"].endswith("_per_frame")]
+    per_frame = [e for e in p2.analytics_events if e["type"].endswith("_per_frame")]
+    assert cumulative == []
+    assert len(per_frame) == 1
+    assert per_frame[0]["value"] == 1  # per-frame counts whole frame inside zone (1 vehicle)
     state_geometry = p2.analytics_state["use_cases"]["vehicle_counting"]["geometry"]
     assert [item["geometry"]["type"] for item in state_geometry] == ["line", "zone"]
     assert state_geometry[0]["count"] == 0
@@ -70,10 +79,15 @@ def test_vehicle_counting_zone_mode_counts_stable_track_once():
     p3 = _packet(3, _det(bbox=[44, 40, 64, 60]))
     stage.process([p3])
 
-    assert len(p2.analytics_events) == 1
-    assert p2.analytics_events[0]["geometry"]["id"] == "zone-main"
-    assert p2.analytics_events[0]["value"] == 1
-    assert p3.analytics_events == []
+    cum_p2 = [e for e in p2.analytics_events if not e["type"].endswith("_per_frame")]
+    assert len(cum_p2) == 1
+    assert cum_p2[0]["geometry"]["id"] == "zone-main"
+    assert cum_p2[0]["value"] == 1
+    # per-frame still present every frame
+    assert any(e["type"] == "vehicle_count_per_frame" and e["value"] == 1 for e in p2.analytics_events)
+    cum_p3 = [e for e in p3.analytics_events if not e["type"].endswith("_per_frame")]
+    assert cum_p3 == []
+    assert any(e["type"] == "vehicle_count_per_frame" for e in p3.analytics_events)
 
 
 def test_pedestrian_counting_whole_frame_default_counts_once():
@@ -82,9 +96,11 @@ def test_pedestrian_counting_whole_frame_default_counts_once():
 
     _, p2 = _run_two(stage, _det(cls="pedestrian", bbox=[10, 10, 30, 40]), _det(cls="pedestrian", bbox=[12, 10, 32, 40]))
 
-    assert len(p2.analytics_events) == 1
-    assert p2.analytics_events[0]["type"] == "pedestrian_count"
-    assert p2.analytics_events[0]["geometry"]["id"] == "zone:whole_frame"
+    cum = [e for e in p2.analytics_events if not e["type"].endswith("_per_frame")]
+    assert len(cum) == 1
+    assert cum[0]["type"] == "pedestrian_count"
+    assert cum[0]["geometry"]["id"] == "zone:whole_frame"
+    assert any(e["type"] == "pedestrian_count_per_frame" and e["value"] == 1 for e in p2.analytics_events)
     state_geometry = p2.analytics_state["use_cases"]["pedestrian_counting"]["geometry"]
     assert state_geometry[0]["geometry"]["name"] == "whole_frame"
     assert state_geometry[0]["count"] == 1
